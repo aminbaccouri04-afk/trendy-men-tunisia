@@ -15,6 +15,7 @@ export default async function AdminOrdersPage() {
             <tr>
               <th className="p-4">N° Commande</th>
               <th className="p-4">Client</th>
+              <th className="p-4">Contact & Adresse</th>
               <th className="p-4">Date</th>
               <th className="p-4">Total</th>
               <th className="p-4">Statut</th>
@@ -24,7 +25,7 @@ export default async function AdminOrdersPage() {
           <tbody className="divide-y divide-zinc-800">
             {orders.length === 0 ? (
               <tr>
-                <td colSpan={6} className="p-4 text-center text-zinc-500">Aucune commande pour le moment.</td>
+                <td colSpan={7} className="p-4 text-center text-zinc-500">Aucune commande pour le moment.</td>
               </tr>
             ) : (
               orders.map(order => (
@@ -32,7 +33,10 @@ export default async function AdminOrdersPage() {
                   <td className="p-4 font-mono text-sm">{order.orderNumber}</td>
                   <td className="p-4">
                     <p className="font-bold">{order.customerName}</p>
-                    <p className="text-xs text-zinc-400">{order.phone}</p>
+                  </td>
+                  <td className="p-4">
+                    <p className="text-sm font-medium">{order.phone}</p>
+                    <p className="text-xs text-zinc-400">{order.address}, {order.city} {order.postalCode}</p>
                   </td>
                   <td className="p-4 text-zinc-400 text-sm">
                     {order.createdAt.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}

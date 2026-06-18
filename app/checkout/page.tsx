@@ -5,8 +5,11 @@ import { createOrder } from "@/app/actions/order";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { useSession } from "next-auth/react";
+
 export default function CheckoutPage() {
   const { items, getTotalPrice, clearCart } = useCartStore();
+  const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -39,14 +42,26 @@ export default function CheckoutPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-8">Commander</h1>
-      {error && <div className="bg-red-500/10 border border-red-500 text-red-500 p-4 rounded mb-6">{error}</div>}
+      <h1 className="text-4xl font-black mb-8 tracking-tight">Finaliser la commande</h1>
+      {!session && (
+        <div className="bg-zinc-900 border border-zinc-800 p-4 rounded-xl mb-8 flex justify-between items-center">
+          <div>
+            <p className="font-bold text-white">Déjà client ?</p>
+            <p className="text-sm text-zinc-400">Connectez-vous pour un passage en caisse plus rapide.</p>
+          </div>
+          <button onClick={() => router.push('/login')} className="bg-zinc-800 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-zinc-700 transition">
+            Se connecter
+          </button>
+        </div>
+      )}
+      {error && <div className="bg-red-500/10 border border-red-500 text-red-500 p-4 rounded-xl mb-6">{error}</div>}
       
-      <form onSubmit={handleSubmit} className="space-y-6 bg-zinc-900 p-8 rounded border border-zinc-800">
+      <form onSubmit={handleSubmit} className="space-y-6 bg-zinc-900/50 p-8 rounded-2xl border border-zinc-800 shadow-xl">
+        <h2 className="text-xl font-bold mb-4 border-b border-zinc-800 pb-4">Vos informations</h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm mb-2 text-zinc-400">Nom complet</label>
-            <input name="customerName" type="text" className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:border-gold-500 outline-none" required />
+            <label className="block text-sm font-medium mb-2 text-zinc-400">Nom complet</label>
+            <input name="customerName" defaultValue={session?.user?.name || ""} type="text" className="w-full bg-black border border-zinc-800 rounded-xl p-3 text-white focus:border-gold-500 outline-none transition" required />
           </div>
           <div>
             <label className="block text-sm mb-2 text-zinc-400">Téléphone</label>
